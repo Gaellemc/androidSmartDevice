@@ -31,9 +31,6 @@ class ScanActivity : AppCompatActivity() {
 
     private var bluetoothAdapter: BluetoothAdapter? = null
 
-    private val REQUEST_ALL_PERMISSIONS = 1001
-
-
     private lateinit var scanAdapter: ScanAdapter
 
     val requestPermissionLauncher =
