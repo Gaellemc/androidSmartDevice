@@ -153,7 +153,6 @@ class ScanActivity : AppCompatActivity() {
         }
 
         ScanPlayStop()
-
     }
 
     fun startScan() {
@@ -167,7 +166,6 @@ class ScanActivity : AppCompatActivity() {
             bluetoothAdapter?.bluetoothLeScanner?.stopScan(leScanCallback)
         }
     }
-
 
 
     private fun initDeviceList() {
