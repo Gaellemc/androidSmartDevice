@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AndroidSmartDevice</string>
+    <string name="title">Bienvenue dans SmartDevice</string>
+    <string name="startButton">Commencer</string>
+    <string name="description">Pour démarrer vos intéractions avec les appareils BLE environnants cliquer sur commencer. </string>
+    <string name="textPlay">Lancer le Scan BLE</string>
+    <string name="textPause">Scan BLE en cours...</string>
+    <string name="ble_scan_missing">ble_scan_missing</string>
+</resources>
