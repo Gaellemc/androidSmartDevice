@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DeviceActivity">
+
+    <TextView
+        android:id="@+id/ConnectionMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="210dp"
+        android:text="@string/ConnectionMessage"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498" />
+
+    <ProgressBar
+        android:id="@+id/progressBarConnexion"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="117dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConnectionMessage" />
+
+    <TextView
+        android:id="@+id/Titre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/Titre"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="373dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/text1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Titre" />
+
+    <TextView
+        android:id="@+id/Description2"
+        android:layout_width="270dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/Description"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/checkBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBarConnexion" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/checkBox"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Description2"
+        app:layout_constraintTop_toBottomOf="@+id/progressBarConnexion" />
+
+    <TextView
+        android:id="@+id/Nombre"
+        android:layout_width="390dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/Nombre"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Description2" />
+
+    <ImageView
+        android:id="@+id/ampoule1"
+        android:layout_width="108dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/ConnectionMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
+        app:layout_constraintVertical_bias="0.506"
+        app:srcCompat="@drawable/capture_d_cran_2023_03_28___14_03_09" />
+
+    <ImageView
+        android:id="@+id/ampoule2"
+        android:layout_width="108dp"
+        android:layout_height="77dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/ConnectionMessage"
+        app:layout_constraintEnd_toStartOf="@+id/ampoule3"
+        app:layout_constraintStart_toEndOf="@+id/ampoule1"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
+        app:layout_constraintVertical_bias="0.506"
+        app:srcCompat="@drawable/capture_d_cran_2023_03_28___14_03_09" />
+
+    <ImageView
+        android:id="@+id/ampoule3"
+        android:layout_width="108dp"
+        android:layout_height="77dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/ConnectionMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
+        app:layout_constraintVertical_bias="0.506"
+        app:srcCompat="@drawable/capture_d_cran_2023_03_28___14_03_09" />
+
+    <Button
+        android:id="@+id/changePage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/changePage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

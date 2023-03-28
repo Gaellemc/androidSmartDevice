@@ -5,12 +5,10 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.BluetoothLeScanner
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 
@@ -21,14 +19,10 @@ import fr.isen.monteil.androidsmartdevice.databinding.ActivityScanBinding
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
+import android.content.Intent
 import android.os.Build
-import android.os.Looper
-import android.provider.Settings.Global.getString
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat.requestPermissions
-import java.util.logging.Handler
 
 
 class ScanActivity : AppCompatActivity() {
@@ -53,6 +47,11 @@ class ScanActivity : AppCompatActivity() {
             }
         }
 
+  /*  //Scan Bluetooth fonction corrigée
+    private val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
+    private var scanning = false
+    private val handler = Handler(Looper.getMainLooper())*/
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,11 +59,15 @@ class ScanActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.list.layoutManager = LinearLayoutManager(this)
-        binding.list.adapter = ScanAdapter(arrayListOf())
+        binding.list.adapter = ScanAdapter(ArrayList(), { device ->
+        }, HashMap<String, Int>())
 
-        scanAdapter = ScanAdapter(ArrayList<BluetoothDevice>())
+        scanAdapter = ScanAdapter(ArrayList(), { device ->
+        }, HashMap<String, Int>())
+
         binding.list.adapter = scanAdapter
 
+        //bluetoothAdapter?.bluetoothLeScanner
 
         if (bluetoothAdapter == null) {
             Snackbar.make(
@@ -74,7 +77,7 @@ class ScanActivity : AppCompatActivity() {
             ).show()
         } else {
             if (bluetoothAdapter?.isEnabled == true) {
-                val device = mutableListOf<String>()
+                //val device = mutableListOf<String>()
                 scanDeviceWithPermissions()
                 ScanPlayStop()
                 //Toast.makeText(this, "Bluetooth activé", Toast.LENGTH_LONG).show()
@@ -139,11 +142,14 @@ class ScanActivity : AppCompatActivity() {
 
     private fun scanBLEDevice() {
         leScanCallback = object : ScanCallback() {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onScanResult(callbackType: Int, result: ScanResult?) {
                 super.onScanResult(callbackType, result)
                 result?.device?.let {
                     scanAdapter.addDevice(it)
+                    scanAdapter.notifyDataSetChanged()
                     updateDeviceList()
+                    val rssi = result.rssi
                 }
             }
             override fun onScanFailed(errorCode: Int) {
@@ -151,7 +157,6 @@ class ScanActivity : AppCompatActivity() {
                 Snackbar.make(binding.root, "Le scan a échoué : $errorCode", Snackbar.LENGTH_LONG).show()
             }
         }
-
         ScanPlayStop()
     }
 
@@ -167,9 +172,24 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun onStop(){
+        super.onStop()
+        if(bluetoothAdapter?.isEnabled == true && allPermissionGranted()){
+            bluetoothAdapter?.bluetoothLeScanner?.stopScan(leScanCallback)
+        }
+    }
+
 
     private fun initDeviceList() {
-        scanAdapter = ScanAdapter(ArrayList())
+        val rssiValues = HashMap<String, Int>()
+        scanAdapter = ScanAdapter(ArrayList(), { device ->
+            val intent = Intent(this, DeviceActivity::class.java)
+            intent.putExtra("device", device)
+            intent.putExtra("rssi", rssiValues[device.address])
+            startActivity(intent)
+        }, rssiValues)
         binding.list.apply {
             layoutManager = LinearLayoutManager(this@ScanActivity)
             adapter = scanAdapter
@@ -204,4 +224,55 @@ class ScanActivity : AppCompatActivity() {
             stopScan()
         }
     }
+
+
+
+
+
+        /*   //Fonction scan Bluetooth corrigée
+           @SuppressLint("MissingPermission")
+           private fun scanBLeDevice() {
+               if (!scanning) { // Stops scanning after a pre-defined scan period.
+                   handler.postDelayed({
+                       scanning = false
+                       bluetoothLeScanner?.stopScan(leScanCallback)
+                       ScanPlayStop()
+                   }, SCAN_PERIOD)
+                   scanning = true
+                   bluetoothLeScanner?.startScan(leScanCallback)
+               } else {
+                   scanning = false
+                   bluetoothLeScanner?.stopScan(leScanCallback)
+               }
+               ScanPlayStop()
+           }
+
+           @RequiresApi(Build.VERSION_CODES.S)
+           override fun onStop(){
+               super.onStop()
+               if(bluetoothAdapter?.isEnabled == true && allPermissionGranted()){
+                   scanning = false
+                   bluetoothLeScanner?.stopScan(leScanCallback)
+               }
+           }
+
+           // Device scan callback.
+           private val leScanCallback: ScanCallback = object : ScanCallback() {
+               @SuppressLint("NotifyDataSetChanged")
+               override fun onScanResult(callbackType: Int, result: ScanResult) {
+                   super.onScanResult(callbackType, result)
+                   (binding.list.adapter as? ScanAdapter)?.addDevice(result.device)
+                   binding.list.adapter?.notifyDataSetChanged()
+               }
+           }
+
+           companion object{
+               // Stops scanning after 10 seconds.
+               private val SCAN_PERIOD: Long = 10000
+           }*/
+
 }
+
+
+
+

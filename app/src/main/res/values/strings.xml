@@ -6,4 +6,11 @@
     <string name="textPlay">Lancer le Scan BLE</string>
     <string name="textPause">Scan BLE en cours...</string>
     <string name="ble_scan_missing">ble_scan_missing</string>
+    <string name="ConnectionMessage">Connection Bluetooth en cours...</string>
+    <string name="Titre">TPBLE</string>
+    <string name="text1">Affichage des différentes LED :</string>
+    <string name="Description">Abonnez vous pour recevoir le nombre d"'"incrémentation</string>
+    <string name="checkBox">RECEVOIR</string>
+    <string name="Nombre">Nombre :</string>
+    <string name="changePage">Autre page</string>
 </resources>
