@@ -81,13 +81,22 @@
 
     <TextView
         android:id="@+id/Nombre"
-        android:layout_width="390dp"
-        android:layout_height="34dp"
+        android:layout_width="81dp"
+        android:layout_height="23dp"
         android:layout_marginTop="32dp"
         android:text="@string/Nombre"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/num"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Description2" />
+
+    <TextView
+        android:id="@+id/num"
+        android:layout_width="296dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="32dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Description2" />
 
     <ImageView

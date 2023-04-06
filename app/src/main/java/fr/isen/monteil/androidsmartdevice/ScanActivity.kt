@@ -150,6 +150,7 @@ class ScanActivity : AppCompatActivity() {
                     scanAdapter.notifyDataSetChanged()
                     updateDeviceList()
                     val rssi = result.rssi
+                    scanAdapter.rssiValues[it.address] = rssi
                 }
             }
             override fun onScanFailed(errorCode: Int) {

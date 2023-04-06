@@ -1,10 +1,8 @@
 package fr.isen.monteil.androidsmartdevice
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
-import android.bluetooth.BluetoothProfile
+import android.bluetooth.*
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +10,13 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.google.android.material.snackbar.Snackbar
 import fr.isen.monteil.androidsmartdevice.databinding.ActivityDeviceBinding
+import java.util.*
+
 
 @SuppressLint("MissingPermission")
 class DeviceActivity : AppCompatActivity() {
@@ -30,11 +31,18 @@ class DeviceActivity : AppCompatActivity() {
 
     private var currentSelectedAmpoule: ImageView? = null
 
+
+    private val service = UUID.fromString("0000feed-cc7a-482a-984a-7f2ed5b3e58f")
+    private val characteristicLed = UUID.fromString("0000abcd-8e22-4541-9d4c-21edae82ed19")
+    private val characteristicButton = UUID.fromString("00001234-8e22-4541-9d4c-21edae82ed19")
+
+
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                gatt?.discoverServices()
                 runOnUiThread {
                     displayTP()
                 }
@@ -44,7 +52,33 @@ class DeviceActivity : AppCompatActivity() {
                 }
             }
         }
+
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            super.onServicesDiscovered(gatt, status)
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                val characteristicButton3 = gatt?.getService(service)?.getCharacteristic(characteristicButton)
+                gatt?.setCharacteristicNotification(characteristicButton3, true)
+                characteristicButton3?.descriptors?.forEach { descriptor ->
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    gatt.writeDescriptor(descriptor)
+                }
+            }
+        }
+
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+            super.onCharacteristicChanged(gatt, characteristic)
+            if (characteristic.uuid == characteristicButton) {
+                val value = characteristic.value
+                val clicks = value[0].toInt()
+                runOnUiThread {
+                    binding.num.text = clicks.toString()
+                }
+            }
+        }
+
+
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,50 +97,80 @@ class DeviceActivity : AppCompatActivity() {
         changePageClick()   //pour tester sans la carte STM32
 
 
-
-        binding.ampoule1.setOnClickListener{
+        binding.ampoule1.setOnClickListener {
             if (currentSelectedAmpoule == binding.ampoule1) {
                 binding.ampoule1.clearColorFilter()
                 currentSelectedAmpoule = null
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x00))
+                gatt.writeCharacteristic(characteristicLed)
+
             } else {
+
                 resetAllAmpoules()
                 val colorFilter = LightingColorFilter(Color.YELLOW, 1)
                 binding.ampoule1.colorFilter = colorFilter
                 currentSelectedAmpoule = binding.ampoule1
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x01))
+                gatt.writeCharacteristic(characteristicLed)
+
             }
+
         }
 
-        binding.ampoule2.setOnClickListener{
+        binding.ampoule2.setOnClickListener {
             if (currentSelectedAmpoule == binding.ampoule2) {
                 binding.ampoule2.clearColorFilter()
                 currentSelectedAmpoule = null
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x00))
+                gatt.writeCharacteristic(characteristicLed)
             } else {
                 resetAllAmpoules()
                 val colorFilter = LightingColorFilter(Color.YELLOW, 1)
                 binding.ampoule2.colorFilter = colorFilter
                 currentSelectedAmpoule = binding.ampoule2
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x02))
+                gatt.writeCharacteristic(characteristicLed)
             }
+
         }
 
-        binding.ampoule3.setOnClickListener{
+        binding.ampoule3.setOnClickListener {
             if (currentSelectedAmpoule == binding.ampoule3) {
                 binding.ampoule3.clearColorFilter()
                 currentSelectedAmpoule = null
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x00))
+                gatt.writeCharacteristic(characteristicLed)
             } else {
                 resetAllAmpoules()
                 val colorFilter = LightingColorFilter(Color.YELLOW, 1)
                 binding.ampoule3.colorFilter = colorFilter
                 currentSelectedAmpoule = binding.ampoule3
+
+                val service = gatt.getService(service)
+                val characteristicLed = service.getCharacteristic(characteristicLed)
+                characteristicLed.setValue(byteArrayOf(0x03))
+                gatt.writeCharacteristic(characteristicLed)
             }
+
         }
-
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mHandler.removeCallbacks(ProgressRunnable)
-    }
+
 
     private fun displayTP() {
         binding.ConnectionMessage.visibility = View.GONE
@@ -116,6 +180,7 @@ class DeviceActivity : AppCompatActivity() {
         binding.Description2.visibility = View.VISIBLE
         binding.checkBox.visibility = View.VISIBLE
         binding.Nombre.visibility = View.VISIBLE
+        binding.num.visibility = View.VISIBLE
         binding.ampoule1.visibility = View.VISIBLE
         binding.ampoule2.visibility = View.VISIBLE
         binding.ampoule3.visibility = View.VISIBLE
@@ -129,6 +194,7 @@ class DeviceActivity : AppCompatActivity() {
         binding.Description2.visibility = View.GONE
         binding.checkBox.visibility = View.GONE
         binding.Nombre.visibility = View.GONE
+        binding.num.visibility = View.GONE
         binding.ampoule1.visibility = View.GONE
         binding.ampoule2.visibility = View.GONE
         binding.ampoule3.visibility = View.GONE
@@ -163,6 +229,7 @@ class DeviceActivity : AppCompatActivity() {
             binding.Description2.visibility = View.VISIBLE
             binding.checkBox.visibility = View.VISIBLE
             binding.Nombre.visibility = View.VISIBLE
+            binding.num.visibility = View.VISIBLE
             binding.ampoule1.visibility = View.VISIBLE
             binding.ampoule2.visibility = View.VISIBLE
             binding.ampoule3.visibility = View.VISIBLE
